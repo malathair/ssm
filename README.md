@@ -4,7 +4,24 @@ SSM is a small Python wrapper to simplify some common SSH use cases. It is essen
 
 ## Gettings Started
 
+### Prerequisites
+
+ - Python3.11 or newer
+ - Pipx
+
 ### Installation
+
+Install the application with pipx using the following command:
+
+```bash
+pipx install https://github.com/malathair/ssm/releases/download/v1.0.0/malathair_ssm-1.0.0-py3-none-any.whl
+```
+
+And then install the config file:
+
+```bash
+curl https://raw.githubusercontent.com/malathair/ssm/v1.0.0/example-conf/ssm.conf | sudo cat >> /usr/local/etc/ssm.conf
+```
 
 ### Updating
 

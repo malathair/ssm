@@ -1,6 +1,9 @@
 # Poetry
 poetry.lock
 
+# Build artifacts
+dist/
+
 # Editors
 .vscode/
 
