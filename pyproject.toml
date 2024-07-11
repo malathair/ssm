@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "malathair-ssm"
+version = "1.0.0"
+description = "CLI SSH wrapper to simplify command verbosity"
+authors = ["malathair <malathair@spectregate.net>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    {include = "malathair/ssm.py", from = "src"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+argparse = "^1.4"
+toml = "^0.10"
+
+[tool.poetry.scripts]
+ssm = 'malathair.ssm:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

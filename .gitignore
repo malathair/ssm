@@ -1,0 +1,25 @@
+# Poetry
+poetry.lock
+
+# Editors
+.vscode/
+
+# Python Environments
+env/
+.env/
+venv/
+.venv/
+
+# Byte-compiled / Optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+log/
+*.log
+
+# Django
+.env
+db.sqlite3
+db.sqlite3-journal
