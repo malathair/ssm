@@ -1,13 +1,11 @@
 [tool.poetry]
 name = "malathair-ssm"
-version = "1.0.0"
-description = "CLI SSH wrapper to simplify command verbosity"
+version = "1.1.0"
+description = "SSH wrapper to simplify life"
 authors = ["malathair <malathair@spectregate.net>"]
 license = "MIT"
 readme = "README.md"
-packages = [
-    {include = "malathair/ssm.py", from = "src"}
-]
+packages = [{ include = "malathair/ssm", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
