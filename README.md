@@ -27,6 +27,15 @@ curl https://raw.githubusercontent.com/malathair/ssm/v1.0.0/example-conf/ssm.con
 
 ### Configuration
 
+### Uninstalling
+
+Run the following to uninstall SSM:
+
+```bash
+pipx uninstall malathair-ssm
+```
+
+
 ## Usage
 
 ### Basic
