@@ -20,7 +20,7 @@ pipx install https://github.com/malathair/ssm/releases/download/v1.0.0/malathair
 And then install the config file:
 
 ```bash
-curl https://raw.githubusercontent.com/malathair/ssm/v1.0.0/example-conf/ssm.conf | sudo cat >> /usr/local/etc/ssm.conf
+curl https://raw.githubusercontent.com/malathair/ssm/v1.0.0/example-conf/ssm.conf | sudo tee /usr/local/etc/ssm.conf 2&>/dev/null
 ```
 
 ### Updating
