@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "malathair-ssm"
-version = "1.1.0"
+version = "1.2.0"
 description = "SSH wrapper to simplify life"
 authors = ["malathair <malathair@spectregate.net>"]
 license = "MIT"

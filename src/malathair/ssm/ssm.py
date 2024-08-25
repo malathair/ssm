@@ -125,6 +125,8 @@ def main():
     try:
         domain = build_domain(args.host, config)
         ssh(args, config, domain)
+    except (KeyboardInterrupt, subprocess.CalledProcessError):
+        return
     except Exception as e:
         print(e)
 
