@@ -97,6 +97,116 @@ def ask_yes_no_question(question: str) -> bool:
                 print('Invalid response: Please enter "y" or "n"')
 
 
+def validator(validator_func):
+    def wrapper(current_setting):
+        print(current_setting)
+        response = input("Enter a new value or leave blank to keep the current setting: ")
+
+        return validator_func(response)
+
+    return wrapper
+
+
+@validator
+def port_validator(port: str) -> str | None:
+    try:
+        if port != "":
+            port_int = int(port)
+            assert port_int > 0 and port_int < 65536
+
+        return port
+    except Exception:
+        return None
+
+
+@validator
+def jumphost_validator(jump_host: str) -> str | None:
+    try:
+        if jump_host != "":
+            assert "." in jump_host
+            assert jump_host[-1] != "." and jump_host[0] != "."
+            socket.gethostbyname(jump_host)
+        return jump_host
+    except Exception:
+        question = f"The entered value ({jump_host}) does not appear to be a valid FQDN. Would you like to use it anyways?"
+
+        if ask_yes_no_question(question):
+            print("Forcing use of entered value...")
+
+            return jump_host
+
+        return None
+
+
+def domain_validator(domain: str) -> str | None:
+    try:
+        assert "." in domain
+        assert domain[-1] != "." and domain[0] != "."
+        return domain
+    except Exception:
+        question = (
+            f"The entered value ({domain}) appears to be invalid. Would you like to use it anyways?"
+        )
+
+        if ask_yes_no_question(question):
+            print("Forcing use of entered value...")
+            return domain
+
+        return None
+
+
+def domain_editor_input_handler(domains: list[str]) -> tuple[list[str], bool]:
+    while True:
+        selection = input("Enter a menu option: ")
+
+        match selection:
+            case "1":
+                new_domain = domain_validator(input("Enter a new domain: "))
+                if new_domain is not None:
+                    domains.append(new_domain)
+                return domains, True
+            case "2":
+                domain_to_remove = input("Enter a domain to remove: ")
+                if domain_to_remove in domains:
+                    domains.remove(domain_to_remove)
+                return domains, True
+            case "3":
+                return None, False
+            case "4":
+                return domains, False
+            case _:
+                print("Invalid selection. Please enter the number of a menu item to proceed")
+
+
+def edit_domains(domains: list[str]) -> list[str]:
+    old_domains = domains.copy()
+    edit = True
+    while edit:
+        print_domain_editor_menu(domains)
+        new_domains, edit = domain_editor_input_handler(domains.copy())
+
+        if new_domains is None:
+            return old_domains
+
+        domains = new_domains
+
+    return domains
+
+
+def print_domain_editor_menu(domains: list[str]) -> None:
+    os.system("clear")
+    print("Domain Editor")
+    print("===============================================\n")
+    print("Current domain list: \n")
+    for i in range(len(domains)):
+        print(f"{domains[i]}")
+    print("\n===============================================\n")
+    print("\t1. Add")
+    print("\t2. Remove")
+    print("\t3. Exit domain editor without saving")
+    print("\t4. Exit domain editor and save\n")
+
+
 def print_current_configuration(config: dict) -> None:
     print("===============================================\n")
     print("The current configuration is:\n")
@@ -127,46 +237,28 @@ def configure() -> None:
     # Set ssh port value
     valid_response = False
     while not valid_response:
-        response = input(
-            f'The current default ssh port is {config_toml["ssh"]["port"]}.'
-            + " Enter a new value or leave blank to keep the current setting: "
-        )
+        port = port_validator(f'The current default ssh port is {config_toml["ssh"]["port"]}.')
 
-        try:
-            if response != "":
-                port = int(response)
-                assert port > 0 and port < 65536
-                config_toml["ssh"]["port"] = port
-
-            valid_response = True
-        except Exception:
+        if port is None:
             print("Invalid port detected. Please enter a valid port number")
+        else:
+            if port != "":
+                config_toml["ssh"]["port"] = port
+            valid_response = True
 
     os.system("clear")
 
     # Set jumphost value
     valid_response = False
     while not valid_response:
-        response = input(
+        jump_host = jumphost_validator(
             f'The current default jumphost is {config_toml["ssh"]["jump"]}.'
-            + " Enter a new value or leave blank to keep the current setting: "
         )
 
-        try:
-            if response != "":
-                assert "." in response
-                assert response[-1] != "." and response[0] != "."
-                socket.gethostbyname(response)
-                config_toml["ssh"]["jump"] = response
-
+        if jump_host is not None:
+            if jump_host != "":
+                config_toml["ssh"]["jump"] = jump_host
             valid_response = True
-        except Exception:
-            question = f"The entered value ({response}) does not appear to be a valid FQDN. Would you like to use it anyways?"
-
-            if ask_yes_no_question(question):
-                print("Forcing use of entered value...")
-                config_toml["ssh"]["jump"] = response
-                valid_response = True
 
     os.system("clear")
 
@@ -191,27 +283,21 @@ def configure() -> None:
     # Set Tunnel Port
     valid_response = False
     while not valid_response:
-        response = input(
+        port = port_validator(
             f'The current default proxy tunnel port is {config_toml["tunnel"]["port"]}.'
-            + " Enter a new value or leave blank to keep the current setting: "
         )
 
-        try:
-            if response != "":
-                port = int(response)
-                assert port > 0 and port < 65536
-                config_toml["tunnel"]["port"] = port
-
-            valid_response = True
-        except Exception:
+        if port is None:
             print("Invalid port detected. Please enter a valid port number")
+        else:
+            if port != "":
+                config_toml["tunnel"]["port"] = port
+            valid_response = True
 
     os.system("clear")
 
     # Set Domains
-    valid_response = False
-    while not valid_response:
-        break
+    config_toml["domains"] = edit_domains(config_toml["domains"])
 
     os.system("clear")
 
