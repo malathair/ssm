@@ -92,8 +92,8 @@ def build_domain(host_arg, config):
 
     for domain in config.domains:
         try:
-            socket.gethostbyname(host + domain)
-            return host_arg + domain
+            socket.gethostbyname(host + "." + domain)
+            return host_arg + "." + domain
         except socket.gaierror:
             pass
 

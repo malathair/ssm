@@ -14,6 +14,7 @@ toml = "^0.10"
 
 [tool.poetry.scripts]
 ssm = 'malathair.ssm:main'
+ssmconf = 'malathair.ssm:configure'
 
 [build-system]
 requires = ["poetry-core"]
