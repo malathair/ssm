@@ -14,18 +14,43 @@ SSM is a small Python wrapper to simplify some common SSH use cases. It is essen
 Install the application with pipx using the following command:
 
 ```bash
-pipx install https://github.com/malathair/ssm/releases/download/v1.0.0/malathair_ssm-1.0.0-py3-none-any.whl
-```
-
-And then install the config file:
-
-```bash
-curl https://raw.githubusercontent.com/malathair/ssm/v1.0.0/example-conf/ssm.conf | sudo tee /usr/local/etc/ssm.conf 2&>/dev/null
+pipx install https://github.com/malathair/ssm/releases/download/v1.2.1/malathair_ssm-1.2.1-py3-none-any.whl
 ```
 
 ### Updating
 
+To update, just run the uninstall command below and then re-install the most recent version. Any existing configuration files on the system will not be affected by this process.
+
+If for some reason the format of the config changes in a breaking way, the new version will include a converter that will run the first time ssm is run on the system. The user will be notified if there are any current settings that are unable to be preserved duringt this process
+
 ### Configuration
+
+ssm expects configuration files to exist at one of the following locations:
+```bash
+/usr/local/etc/ssm.conf
+
+or
+
+~/.config/ssm.conf
+```
+
+As of version 1.2.0, ssm now has it's default configuration hard coded into the application and will fall back to the defaults if no valid configuration files are found on the system.
+
+If you would like to modify the configuration, you can either use the configuration utility provided by the package (recommended) or you can edit the config files manually (not recommended).
+
+You can use the provided configuration utility by running:
+```bash
+ssmconf
+```
+
+### Uninstalling
+
+Run the following to uninstall SSM:
+
+```bash
+pipx uninstall malathair-ssm
+```
+
 
 ## Usage
 

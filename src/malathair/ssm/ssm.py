@@ -2,10 +2,10 @@
 # Simple SSH Manager is a program to simplify sshing to various networking devices
 import argparse
 import ipaddress
-import os
 import socket
 import subprocess
-import toml
+
+from .config import Config
 
 
 # Class to override the default argparse help formatting (makes things a bit cleaner)
@@ -21,32 +21,10 @@ class HelpFormatter(argparse.HelpFormatter):
         return ", ".join(parts)
 
 
-### Global Config Options ###
-class Config:
-    def __init__(self, config):
-        try:
-            use_sshpass = config["ssh"]["sshpass"]
-        except KeyError:
-            use_sshpass = False
-        self.sshpass = use_sshpass
-
-        self.ssh_port = str(config["ssh"]["port"])
-        self.jump_host = config["ssh"]["jump"]
-        self.tunnel_port = str(config["tunnel"]["port"])
-        self.domains = config["domains"]
-
-
-def load_config():
-    with open(
-        os.path.expanduser("/usr/local/etc/ssm.conf"), "r", encoding="utf-8"
-    ) as file:
-        return Config(toml.load(file))
-
-
 # Define CLI arguments for the program
 def arg_parser(config):
     parser = argparse.ArgumentParser(
-        description="An SSH wrapper to simplify life. The config file can be found at /usr/local/etc/ssm.conf",
+        description="An SSH wrapper to simplify life",
         formatter_class=HelpFormatter,
     )
 
@@ -114,8 +92,8 @@ def build_domain(host_arg, config):
 
     for domain in config.domains:
         try:
-            socket.gethostbyname(host + domain)
-            return host_arg + domain
+            socket.gethostbyname(host + "." + domain)
+            return host_arg + "." + domain
         except socket.gaierror:
             pass
 
@@ -141,12 +119,14 @@ def ssh(args, config, domain):
 
 
 def main():
-    config = load_config()
+    config = Config()
     args = arg_parser(config)
 
     try:
         domain = build_domain(args.host, config)
         ssh(args, config, domain)
+    except (KeyboardInterrupt, subprocess.CalledProcessError):
+        return
     except Exception as e:
         print(e)
 
