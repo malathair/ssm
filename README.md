@@ -1,7 +1,11 @@
 # Malathair's Simple SSH Manager
 
-> [!WARNING]
+> [!CAUTION]
 > This tool is still in the process of being ported to Go. Functionality may be missing or broken.
+
+> [!NOTE]
+> Please be aware that this tool will not have 100% feature parity with the original Python project
+> and that it is more of a spiritual successor rather than a port
 
 SSM is a CLI utility that attempts to provide a better SSH experience by providing a wrapper
 for OpenSSH's ssh command. It does so through a simplified interface with some sensible
