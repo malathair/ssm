@@ -11,6 +11,14 @@
 !README.md
 !LICENSE
 
-!examples/*
+!Makefile
 
+# Generally allow subdirectory traversal for whitelisted files
+# (otherwise only top level files are whitelisted)
 !*/
+
+# Allow anything under the docs or examples directories
+# Subdirectory traversal must be enabled separate for each with <dir>/**/*
+!docs/*
+!docs/**/*
+!examples/*
