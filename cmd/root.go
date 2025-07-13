@@ -72,7 +72,7 @@ func init() {
 			"{{wrappedFlagUsage .LocalFlags | trimTrailingWhitespaces}}" +
 			"{{end}}\n",
 	)
-	rootCmd.SetVersionTemplate(`{{ printf "malathair-ssm v%s\n" .Version }}`)
+	rootCmd.SetVersionTemplate(`{{ printf "malathair-ssm %s\n" .Version }}`)
 
 	// Load default values from config file so we can pass them as defaults to flags
 	loadConfig()
