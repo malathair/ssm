@@ -38,4 +38,5 @@ $(WINDOWS_AMD64):
 
 clean:
 	@echo "Cleaning build artifacts..."
-	@rm -rf $(BUILD_DIR)
+	@rm -f $(BUILD_DIR)/*
+	@rmdir $(BUILD_DIR)
