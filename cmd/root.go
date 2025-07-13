@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -24,7 +25,6 @@ var rootCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if config.dryRun {
-			fmt.Println(viper.AllSettings())
 			printConfig()
 		}
 
@@ -185,13 +185,27 @@ func loadConfig() {
 }
 
 func printConfig() {
-	fmt.Printf("    Command: %v\n", config.remoteCmd)
-	fmt.Printf("Debug Level: %v\n", config.debugLvl)
-	fmt.Printf("    Domains: %v\n", config.domains)
-	fmt.Printf("     DryRun: %v\n", config.dryRun)
-	fmt.Printf("       Jump: %v\n", config.jump)
-	fmt.Printf("   Jumphost: %v\n", config.jumphost)
-	fmt.Printf("       Port: %v\n", config.port)
-	fmt.Printf("     Tunnel: %v\n", config.tunnel)
-	fmt.Printf("Tunnel Port: %v\n", config.tunnelPort)
+	writer := tabwriter.NewWriter(os.Stdout, 0, 2, 4, ' ', 0)
+
+	if config.remoteCmd == "" {
+		fmt.Fprintf(writer, "Command\tn/a\n")
+	} else {
+		fmt.Fprintf(writer, "Command\t%v\n", config.remoteCmd)
+	}
+	fmt.Fprintf(writer, "Debug Level\t%v\n", config.debugLvl)
+	fmt.Fprintf(writer, "Domains\t%v\n", config.domains)
+	fmt.Fprintf(writer, "DryRun\t%v\n", config.dryRun)
+	fmt.Fprintf(writer, "Jump\t%v\n", config.jump)
+	if config.jumphost == "" {
+		fmt.Fprintf(writer, "Jumphost\tn/a\n")
+	} else {
+		fmt.Fprintf(writer, "Jumphost\t%v\n", config.jumphost)
+	}
+	fmt.Fprintf(writer, "Port\t%v\n", config.port)
+	fmt.Fprintf(writer, "Tunnel\t%v\n", config.tunnel)
+	fmt.Fprintf(writer, "Tunnel Port\t%v\n", config.tunnelPort)
+
+	writer.Flush()
+
+	fmt.Println()
 }
