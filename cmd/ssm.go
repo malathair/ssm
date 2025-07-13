@@ -1,8 +1,11 @@
 package cmd
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/exec"
 	"strconv"
@@ -11,19 +14,50 @@ import (
 	"github.com/spf13/viper"
 )
 
-func buildFqdn(host string) (string, error) {
-	// TODO: build domain
-	// For now just return the provided host as is
+func buildFqdn(host string) string {
+	ip := net.ParseIP(host)
+	if ip != nil {
+		if config.dryRun {
+			fmt.Printf("%s is valid IP address\n", host)
+			fmt.Println()
+		}
+		return ip.String()
+	} else if config.dryRun {
+		fmt.Printf("%s is not a valid IP Address\n", host)
+	}
 
-	// TODO: test if the provided host is a valid IPv4 address
-	// TODO: If not a valid IPv4 address, check if the provided host is a valid FQDN
-	// TODO: If not a valid FQDN, attempt to build a valid FQDN from the config's domain list
+	_, err := net.DefaultResolver.LookupIP(context.Background(), "ip4", host)
+	if err == nil {
+		if config.dryRun {
+			fmt.Printf("%s is a valid FQDN\n", host)
+			fmt.Println()
+		}
+		return host
+	} else if config.dryRun {
+		fmt.Printf("%s is not a valid FQDN (%s)\n", host, err)
+	}
 
-	//	ips, err := net.DefaultResolver.LookupIP(context.Background(), "ip4", args[0])
-	//	if err != nil {
-	//		fmt.Println(err)
-	//	}
-	return host, nil
+	if len(config.domains) < 1 {
+		fmt.Println("No domains found for FQDN autocompletion")
+		return ""
+	}
+
+	fmt.Println("Attempting to build FQDN from domain list:")
+	for _, domain := range config.domains {
+		fqdn := host + "." + domain
+		_, err := net.DefaultResolver.LookupIP(context.Background(), "ip4", fqdn)
+		if err == nil {
+			if config.dryRun {
+				fmt.Printf("%s is a valid FQDN\n", fqdn)
+				fmt.Println()
+			}
+			return host
+		} else if config.dryRun {
+			fmt.Printf("%s is not a valid FQDN (%s)\n", fqdn, err)
+		}
+	}
+
+	return ""
 }
 
 func buildSshArgs(user, fqdn string) ([]string, error) {
@@ -47,9 +81,9 @@ func buildSshArgs(user, fqdn string) ([]string, error) {
 	//  when jumphosting. Either need to disable the use of sshpass when jumphosting or implement
 	//  a version of it that can handle multiple password prompts in succession
 	if config.jump || config.jumphost != viper.GetString("flags.jumphost") {
-		jumphost, err := buildFqdn(config.jumphost)
-		if err != nil {
-			return nil, err
+		jumphost := buildFqdn(config.jumphost)
+		if jumphost == "" {
+			return nil, errors.New(fmt.Sprintf("Failed to find valid FQDN for jumphost %s\n", config.jumphost))
 		}
 		sshArgs = append(sshArgs, "-J", jumphost)
 
@@ -90,9 +124,9 @@ func ssm(userAndHost string) error {
 		host = parts[0]
 	}
 
-	fqdn, err = buildFqdn(host)
-	if err != nil {
-		return err
+	fqdn = buildFqdn(host)
+	if fqdn == "" {
+		return errors.New(fmt.Sprintf("Failed to find valid FQDN for %s", host))
 	}
 
 	sshArgs, err = buildSshArgs(user, fqdn)
