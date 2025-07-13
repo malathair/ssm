@@ -2,6 +2,9 @@
 
 > [!CAUTION]
 > This tool is still in the process of being ported to Go. Functionality may be missing or broken.
+>   Known missing features:
+>     - Support for sshpass
+>     - SSH Options
 
 > [!NOTE]
 > Please be aware that this tool will not have 100% feature parity with the original Python project
