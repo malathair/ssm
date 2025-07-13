@@ -42,7 +42,9 @@ func buildFqdn(host string) string {
 		return ""
 	}
 
-	fmt.Println("Attempting to build FQDN from domain list:")
+	if config.dryRun {
+		fmt.Println("Attempting to build FQDN from domain list:")
+	}
 	for _, domain := range config.domains {
 		fqdn := host + "." + domain
 		_, err := net.DefaultResolver.LookupIP(context.Background(), "ip4", fqdn)
