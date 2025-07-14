@@ -53,7 +53,7 @@ func buildFqdn(host string) string {
 				fmt.Printf("%s is a valid FQDN\n", fqdn)
 				fmt.Println()
 			}
-			return host
+			return fqdn
 		} else if config.dryRun {
 			fmt.Printf("%s is not a valid FQDN (%s)\n", fqdn, err)
 		}
