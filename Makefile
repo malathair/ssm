@@ -9,9 +9,9 @@ VERSION=$(shell git describe --tags --always)
 
 .PHONY: all clean $(PLATFORMS)
 
-all: build
+all: clean build
 
-build: darwin linux windows
+build: linux #darwin windows
 	@echo "Generating SHA256 checksums..."
 	@sha256sum $(BUILD_DIR)/* > $(BUILD_DIR)/$(EXECUTABLE)_$(VERSION)_checksums.txt
 
