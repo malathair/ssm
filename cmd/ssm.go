@@ -16,13 +16,18 @@ import (
 
 func buildFqdn(userAndHost string) (string, string) {
 	var (
-		host string
-		user string
+		domain string
+		err    error
+		fqdn   string
+		host   string
+		ip     net.IP
+		parts  []string
+		user   string
 	)
 
 	// Handle splitting user and host if an alternate username is supplied
 	// Users are expected with the standard <user>@<host> format
-	parts := strings.Split(userAndHost, "@")
+	parts = strings.Split(userAndHost, "@")
 	if len(parts) > 2 {
 		log.Fatalf("Invalid user and host combination: %s", userAndHost)
 	} else if len(parts) == 2 {
@@ -32,22 +37,20 @@ func buildFqdn(userAndHost string) (string, string) {
 		host = parts[0]
 	}
 
-	ip := net.ParseIP(host)
+	ip = net.ParseIP(host)
 	if ip != nil {
 		if config.dryRun {
-			fmt.Printf("%s is a valid IP address\n", host)
-			fmt.Println()
+			fmt.Printf("%s is a valid IP address\n\n", host)
 		}
 		return user, ip.String()
 	} else if config.dryRun {
 		fmt.Printf("%s is not a valid IP Address\n", host)
 	}
 
-	_, err := net.DefaultResolver.LookupIP(context.Background(), "ip4", host)
+	_, err = net.DefaultResolver.LookupIP(context.Background(), "ip4", host)
 	if err == nil {
 		if config.dryRun {
-			fmt.Printf("%s is a valid FQDN\n", host)
-			fmt.Println()
+			fmt.Printf("%s is a valid FQDN\n\n", host)
 		}
 		return user, host
 	} else if config.dryRun {
@@ -62,17 +65,16 @@ func buildFqdn(userAndHost string) (string, string) {
 	if config.dryRun {
 		fmt.Println("Attempting to build FQDN from domain list:")
 	}
-	for _, domain := range config.domains {
-		fqdn := host + "." + domain
-		_, err := net.DefaultResolver.LookupIP(context.Background(), "ip4", fqdn)
+	for _, domain = range config.domains {
+		fqdn = host + "." + domain
+		_, err = net.DefaultResolver.LookupIP(context.Background(), "ip4", fqdn)
 		if err == nil {
 			if config.dryRun {
-				fmt.Printf("%s is a valid FQDN\n", fqdn)
-				fmt.Println()
+				fmt.Printf("  %s is a valid FQDN\n\n", fqdn)
 			}
 			return user, fqdn
 		} else if config.dryRun {
-			fmt.Printf("%s is not a valid FQDN (%s)\n", fqdn, err)
+			fmt.Printf("  %s is not a valid FQDN (%s)\n", fqdn, err)
 		}
 	}
 
@@ -80,7 +82,11 @@ func buildFqdn(userAndHost string) (string, string) {
 }
 
 func buildSshArgs(user, fqdn string) ([]string, error) {
-	var sshArgs = []string{"ssh"}
+	var (
+		jumphost string
+		jumpuser string
+		sshArgs  = []string{"ssh"}
+	)
 
 	if user != "" {
 		sshArgs = append(sshArgs, user+"@"+fqdn)
@@ -96,7 +102,7 @@ func buildSshArgs(user, fqdn string) ([]string, error) {
 	}
 
 	if config.jump || config.jumphost != viper.GetString("flags.jumphost") {
-		jumpuser, jumphost := buildFqdn(config.jumphost)
+		jumpuser, jumphost = buildFqdn(config.jumphost)
 		if jumphost == "" {
 			return nil, errors.New(fmt.Sprintf("Failed to find valid FQDN for jumphost %s\n", config.jumphost))
 		}
