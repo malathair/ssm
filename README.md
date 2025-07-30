@@ -1,14 +1,14 @@
 # Malathair's Simple SSH Manager
 
-> [!CAUTION]
-> This tool is still in the process of being ported to Go. Functionality may be missing or broken.
->   Known missing features:
->     - Support for sshpass
->     - SSH Options
+<!-- PROJECT SHIELDS -->
+[![Version][version-shield]][version-url]
+[![Go Reference][reference-shield]][reference-url]
+[![Go Report Card][reportcard-shield]][reportcard-url]
+[![MIT License][license-shield]][license-url]
 
-> [!NOTE]
-> Please be aware that this tool will not have 100% feature parity with the original Python project
-> and that it is more of a spiritual successor rather than a port
+<br/>
+
+## About the Project
 
 SSM is a CLI utility that attempts to provide a better SSH experience by providing a wrapper
 for OpenSSH's ssh command. It does so through a simplified interface with some sensible
@@ -23,18 +23,48 @@ completion and password autofill through the use of sshpass.
 This is a port/re-imagining of my original Python implementation which can be found here:
 [Malathair's Python Simple SSH Manager](https://github.com/malathair/ssm-python)
 
+<br/>
+
+## Getting Started
+
 ### Prerequisites
+Additional software needed to use SSM
 
 - OpenSSH SSH client
 
 ### Installation
-TBD...
+SSM can be installed by running:
+
+```bash
+go install github.com/malathair/ssm@latest
+```
+
+Or by downloading the [latest precompiled binary][version-url]
 
 ### Updating
 TBD...
 
 ### Configuration
-TBD...
+SSM expects the configuration file called `ssm.conf` to exist in the current working
+directory or in the user's config home dir.
+
+An example configuration file can be found here: [examples/ssm.conf](examples/ssm.conf)
 
 ### Uninstalling
-TBD...
+SSM can be uninstalled by running:
+
+```bash
+rm $(which ssm)
+```
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[license-shield]: https://img.shields.io/github/license/malathair/ssm.svg
+[license-url]: https://github.com/malathair/ssm/blob/main/LICENSE
+[reference-shield]: https://pkg.go.dev/badge/github.com/malathair/ssm.svg
+[reference-url]: https://pkg.go.dev/github.com/malathair/ssm
+[reportcard-shield]: https://goreportcard.com/badge/github.com/malathair/ssm
+[reportcard-url]: https://goreportcard.com/report/github.com/malathair/ssm
+[version-shield]: https://img.shields.io/github/release/malathair/ssm.svg
+[version-url]: https://github.com/malathair/ssm/releases/latest
