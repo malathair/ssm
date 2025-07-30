@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	version = "v0.1.2"
+	version = ""
 
 	config RuntimeConfig
 )
