@@ -44,6 +44,7 @@ type RuntimeConfig struct {
 	jump       bool
 	jumphost   string
 	port       int
+	sshpass    bool
 	tunnel     bool
 	tunnelPort int
 }
@@ -159,8 +160,9 @@ func loadConfig() {
 	viper.SetConfigType("toml")
 
 	// Set some sensible default values in case loading a config fails
-	viper.SetDefault("domains", []string{})
 	viper.SetDefault("debug-level", 0)
+	viper.SetDefault("domains", []string{})
+	viper.SetDefault("sshpass", false)
 	viper.SetDefault("flags.dry-run", false)
 	viper.SetDefault("flags.jump", false)
 	viper.SetDefault("flags.jumphost", "")
@@ -178,10 +180,10 @@ func loadConfig() {
 		}
 	}
 
-	// Load domains manually since there isn't a flag for this
-	config.domains = viper.GetStringSlice("domains")
-	// Load debug level manually since the flag can't bind a default
+	// Load defaults that don't have flags or for flags that can't bind defaults
 	config.debugLvl = viper.GetInt("debug-level")
+	config.domains = viper.GetStringSlice("domains")
+	config.sshpass = viper.GetBool("sshpass")
 }
 
 func printConfig() {
@@ -202,6 +204,7 @@ func printConfig() {
 		fmt.Fprintf(writer, "Jumphost\t%v\n", config.jumphost)
 	}
 	fmt.Fprintf(writer, "Port\t%v\n", config.port)
+	fmt.Fprintf(writer, "sshpass\t%v\n", config.sshpass)
 	fmt.Fprintf(writer, "Tunnel\t%v\n", config.tunnel)
 	fmt.Fprintf(writer, "Tunnel Port\t%v\n", config.tunnelPort)
 

@@ -80,7 +80,7 @@ func buildFqdn(userAndHost string) (string, string) {
 }
 
 func buildSshArgs(user, fqdn string) ([]string, error) {
-	var sshArgs []string
+	var sshArgs = []string{"ssh"}
 
 	if user != "" {
 		sshArgs = append(sshArgs, user+"@"+fqdn)
@@ -95,10 +95,6 @@ func buildSshArgs(user, fqdn string) ([]string, error) {
 		sshArgs = append(sshArgs, "-"+strings.Repeat("v", min(config.debugLvl, 3)))
 	}
 
-	// TODO: Need to deal with sshpass here.
-	// 	sshpass breaks down when dealing with multiple password prompts which is a common occurrence
-	//  when jumphosting. Either need to disable the use of sshpass when jumphosting or implement
-	//  a version of it that can handle multiple password prompts in succession
 	if config.jump || config.jumphost != viper.GetString("flags.jumphost") {
 		jumpuser, jumphost := buildFqdn(config.jumphost)
 		if jumphost == "" {
@@ -109,7 +105,8 @@ func buildSshArgs(user, fqdn string) ([]string, error) {
 		} else {
 			sshArgs = append(sshArgs, "-J", jumphost)
 		}
-
+	} else if config.sshpass && user == "" {
+		sshArgs = append([]string{"sshpass", "-e"}, sshArgs...)
 	}
 
 	// TODO: Implement SSH options
@@ -143,9 +140,9 @@ func ssm(host string) error {
 	}
 
 	if config.dryRun {
-		fmt.Printf("Generated SSH command: \n  %s\n", "ssh "+strings.Join(sshArgs, " "))
+		fmt.Printf("Generated SSH command: \n  %s\n", strings.Join(sshArgs, " "))
 	} else {
-		shellCmd = exec.Command("ssh", sshArgs...)
+		shellCmd = exec.Command(sshArgs[0], sshArgs[1:]...)
 
 		shellCmd.Stdin = os.Stdin
 		shellCmd.Stdout = os.Stdout
