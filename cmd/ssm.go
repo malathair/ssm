@@ -35,7 +35,7 @@ func buildFqdn(userAndHost string) (string, string) {
 	ip := net.ParseIP(host)
 	if ip != nil {
 		if config.dryRun {
-			fmt.Printf("%s is valid IP address\n", host)
+			fmt.Printf("%s is a valid IP address\n", host)
 			fmt.Println()
 		}
 		return user, ip.String()
