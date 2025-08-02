@@ -47,14 +47,21 @@ func buildFqdn(userAndHost string) (string, string) {
 		fmt.Printf("%s is not a valid IP Address\n", host)
 	}
 
-	_, err = net.DefaultResolver.LookupIP(context.Background(), "ip4", host)
-	if err == nil {
-		if config.dryRun {
-			fmt.Printf("%s is a valid FQDN\n\n", host)
+	// If we are confident the host is not an FQDN skip this test. This is mainly needed on
+	// WSL because it handles DNS in very strange ways. It also improves performance in cases
+	// where mDNS is in use. This optimization only works reliably with public DNS servers.
+	// If using a private DNS server that contains records that are just the host portion
+	// of the FQDN, then this optimization will make it impossible to resolve those.
+	if strings.ContainsRune(host, '.') {
+		_, err = net.DefaultResolver.LookupIP(context.Background(), "ip4", host)
+		if err == nil {
+			if config.dryRun {
+				fmt.Printf("%s is a valid FQDN\n\n", host)
+			}
+			return user, host
+		} else if config.dryRun {
+			fmt.Printf("%s is not a valid FQDN (%s)\n", host, err)
 		}
-		return user, host
-	} else if config.dryRun {
-		fmt.Printf("%s is not a valid FQDN (%s)\n", host, err)
 	}
 
 	if len(config.domains) < 1 {

@@ -35,22 +35,25 @@ Additional software needed to use SSM
 ### Installation
 SSM can be installed by downloading the [latest precompiled binary][version-url]
 
-### Updating
-TBD...
-
 ### Configuration
 SSM expects the configuration file called `ssm.conf` to exist in the current working
 directory or in the user's config home dir.
 
 An example configuration file can be found here: [examples/ssm.conf](examples/ssm.conf)
 
-### Uninstalling
+<br/>
+
+## Updating
+TBD...
+
+<br/>
+
+## Uninstalling
 SSM can be uninstalled by running:
 
 ```bash
 rm $(which ssm)
 ```
-
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
