@@ -13,6 +13,8 @@
 
 !Makefile
 
+!install.sh
+
 # Generally allow subdirectory traversal for whitelisted files
 # (otherwise only top level files are whitelisted)
 !*/
