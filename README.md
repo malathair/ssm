@@ -33,7 +33,12 @@ Additional software needed to use SSM
 - OpenSSH SSH client
 
 ### Installation
-SSM can be installed by downloading the [latest precompiled binary][version-url]
+SSM can be installed by running the installer script:
+```bash
+curl https://raw.githubusercontent.com/malathair/ssm/refs/heads/main/install.sh | sh
+```
+
+Or by downloading the [latest precompiled binary][version-url]
 
 ### Configuration
 SSM expects the configuration file called `ssm.conf` to exist in the current working
