@@ -49,7 +49,8 @@ An example configuration file can be found here: [examples/ssm.conf](examples/ss
 <br/>
 
 ## Updating
-TBD...
+To update SSM, simply copy the latest ssm binary over the existing binary on your system. This
+can be done by either running the installer script, or by downloading the [latest precompiled binary][version-url]
 
 <br/>
 
