@@ -10,10 +10,8 @@ import (
 	"golang.org/x/term"
 )
 
-var version = ""
-
 var rootCmd = &cobra.Command{
-	Version: version,
+	Version: getVersion(),
 	Args:    cobra.ExactArgs(1),
 
 	Run: func(cmd *cobra.Command, args []string) {
