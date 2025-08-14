@@ -33,8 +33,13 @@ Additional software needed to use SSM
 - OpenSSH SSH client
 
 ### Installation
-SSM can be installed by running the installer script:
-```bash
+SSM can be installed using the go installer by running the following command:
+```sh
+go install github.com/malathair/ssm@latest
+```
+
+By using the standalone installer script:
+```sh
 curl https://raw.githubusercontent.com/malathair/ssm/refs/heads/main/install.sh | sh
 ```
 
