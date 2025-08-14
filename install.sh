@@ -6,7 +6,7 @@ get_install_dir() {
 
     # Check to see if this was run as root. If it was, then install to /usr/local/bin
     # otherwise install to the user's private bin
-    if [ "$EUID" -ne 0 ]; then
+    if [ "$(id -u)" -ne 0 ]; then
 
         INSTALL_DIR="$HOME/bin"
 
@@ -24,7 +24,7 @@ get_install_dir() {
 
     fi
 
-    echo $INSTALL_DIR
+    echo "$INSTALL_DIR"
 
 }
 
