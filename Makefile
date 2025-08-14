@@ -11,7 +11,7 @@ all: clean build
 
 build: linux #darwin windows
 	@echo "Generating SHA256 checksums..."
-	@sha256sum $(BUILD_DIR)/* > $(BUILD_DIR)/$(EXECUTABLE)_$(VERSION)_checksums.txt
+	@sha256sum $(BUILD_DIR)/* > $(BUILD_DIR)/$(EXECUTABLE)_checksums.txt
 
 darwin: $(DARWIN_AMD64)
 
@@ -36,4 +36,4 @@ $(WINDOWS_AMD64):
 
 clean:
 	@echo "Cleaning build artifacts..."
-	@rm -f $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR)
